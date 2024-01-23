@@ -21,6 +21,7 @@ library(tidyverse)
 library(opendatatoronto)
 library(knitr)
 library(kableExtra)
+library(tinytex)
 ```
 
 # Introduction {#sec-intro}
@@ -36,7 +37,6 @@ Some of our data is of total programs in all shelter in Toronto area (@fig-progr
 ```{r}
 #| label: fig-programs-total
 #| fig-cap: Total distinct program in all shelter based on city
-#| include: false
 #| echo: false
 #| warning: false
 #| message: false
@@ -59,7 +59,6 @@ Here is our data with program with free space in all shelter around Toronto area
 ```{r}
 #| label: fig-programs-free
 #| fig-cap: Distinct program with free space in all shelter based on city
-#| include: false
 #| echo: false
 #| warning: false
 #| message: false
@@ -84,7 +83,6 @@ Our results are summarized in @tbl-results.
 #| eval: true
 #| label: tbl-results
 #| tbl-cap: "Average data of the year categorized by city"
-#| include: false
 #| warning: false
 #| message: false
 
@@ -130,7 +128,6 @@ There is quite a few weaknesses in this research. Firstly, there is many differe
 ```{r}
 #| label: fig-programs-percent
 #| fig-cap: Percentage of distinct program that is full in all shelter based on city
-#| include: false
 #| echo: false
 #| warning: false
 #| message: false
