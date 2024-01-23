@@ -13,13 +13,17 @@ library(tidyverse)
 
 
 citation()
+citation("tidyverse")
 citation("opendatatoronto")
-citation("ggplot2")
+citation("tidyverse")
 citation("janitor")
+citation("ggplot2")
+#citation https://tellingstorieswithdata.com/
 
 #### Simulate data ####
 set.seed(124)
 
+# Based on Rohan Alexander: https://tellingstorieswithdata.com/02-drinking_from_a_fire_hose.html#simulate-1
 simulated_occupancy_data <-
   tibble(
     date = rep(x = as.Date("2023-01-01") + c(0:364), times = 3),

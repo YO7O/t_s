@@ -15,10 +15,14 @@ library(tidyverse)
 citation("ggplot2")
 
 #### Download data ####
+# Based on Rohan Alexander: https://tellingstorieswithdata.com/02-drinking_from_a_fire_hose.html#acquire-1
+# Source data: https://open.toronto.ca/dataset/daily-shelter-overnight-service-occupancy-capacity/
 raw_shelter_data <-
-  # https://open.toronto.ca/dataset/daily-shelter-overnight-service-occupancy-capacity/
+  # Get data from opendatatoronto using unique id in "For Developers" tab
   list_package_resources("21c83b32-d5a8-4106-a54f-010dbe49f6f2") |>
+  # Using the 2023 dataset
   filter(name == "daily-shelter-overnight-service-occupancy-capacity-2023.csv") |>
+  # Having reduced the dataset to one row we can get the resource
   get_resource()
 
 
