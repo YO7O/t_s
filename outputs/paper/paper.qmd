@@ -21,7 +21,6 @@ library(tidyverse)
 library(opendatatoronto)
 library(knitr)
 library(kableExtra)
-library(tinytex)
 ```
 
 # Introduction {#sec-intro}
@@ -54,7 +53,7 @@ analysis_data |>
 
 We can see there is a decrease trend in the programs provided in Toronto area, but it still have the most programs out of all cities. Also, there is barely any services in Scarborough, Etobicoke and Vaughan, which is worth noticing.
 
-Here is our data with program with free space in all shelter around Toronto area (@fig-programs-free).
+Here is our data with program with free space in all shelter around Toronto area (@fig-programs-free), analyzed using tools made by @citeR and @tidyverse
 
 ```{r}
 #| label: fig-programs-free
@@ -76,7 +75,7 @@ There is a downward trend in programs with space in Toronto, which could be caus
 
 # Results {#sec-result}
 
-Our results are summarized in @tbl-results.
+Our results are summarized in @tbl-results with the help of tools made by @knitr and @kableextra.
 
 ```{r}
 #| echo: false
@@ -140,5 +139,7 @@ analysis_data |>
   scale_color_brewer(palette = "Set1") +
   theme(legend.position = "bottom")
 ```
+
+Here are some reference that is used in code but haven't mentioned in the paper: @janitor, @tellingstories, @dplyr
 
 # References

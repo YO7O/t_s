@@ -11,18 +11,6 @@
 #### Workspace setup ####
 library(tidyverse)
 
-
-citation()
-citation("tidyverse")
-citation("opendatatoronto")
-citation("tidyverse")
-citation("janitor")
-citation("ggplot2")
-#citation https://tellingstorieswithdata.com/
-citation("dplyr")
-print(citation("knitr"), bibtex=TRUE)
-citation("kableExtra")
-
 #### Simulate data ####
 set.seed(124)
 
