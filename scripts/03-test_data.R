@@ -1,11 +1,11 @@
 #### Preamble ####
-# Purpose: Tests... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Tests the data of shelter programs
+# Author: Kenneth Chan
+# Date: 22 January 2024
+# Contact: chif.chan@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: None
+# Any other information needed? None
 
 
 #### Workspace setup ####
@@ -31,4 +31,3 @@ all(shelter_data$shelter_program_with_space <= shelter_data$total_shelter_progra
 all.equal(
   shelter_data$percentage_full,
   (1 - shelter_data$shelter_program_with_space / shelter_data$total_shelter_program) * 100)
-

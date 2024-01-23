@@ -1,15 +1,14 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
+title: "Toronto Homeless Shelter by Cities"
 author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: LINK."
+  - Kenneth Chan
+thanks: "Code and data are available at: https://github.com/YO7O/toronto_shelter_capacity"
 date: today
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "Homelessness and housing is a problem that every big city have to face, and Toronto is no exception. With the constant increase of rent in Toronto, there is no suprise that the need for shelter services is constantly high. We found that the amount of shelters programs with free space drastically differs between different cities nearby Toronto. This paper aims to visualize those difference with graphs and tables."
 format: pdf
 number-sections: true
+toc: true
 bibliography: references.bib
 ---
 
@@ -19,129 +18,104 @@ bibliography: references.bib
 #| message: false
 
 library(tidyverse)
-library(palmerpenguins)
+library(opendatatoronto)
+library(knitr)
+library(kableExtra)
 ```
 
-# Introduction
+# Introduction {#sec-intro}
 
-You can and should cross-reference sections and sub-sections.
+Year 2023 is the first year I came back to Canada since COVID-19 happened. I still recall that I was hugely shocked by the inflation in rent, which felt like a 20% increase across the board since I left in 2020. This makes me wonder, if a international student with a decent wealth family background like me is shocked by the rent, how would it affect the homelessness of the city, considering the average salary have not gone up by a huge margin.
 
-The remainder of this paper is structured as follows. @sec-data....
+This paper aims to analyze the data of shelter programs in different cities, and find out the how many shelter programs are available, or in other words, have free space throughout the year for people that is in need. Despite having a lot of analysis about toronto shelter online, I cannot find one that is specifically aiming towards finding difference in district, hence this paper is written. 
 
 # Data {#sec-data}
 
-Some of our data is of penguins (@fig-bills), from @palmerpenguins.
+Some of our data is of total programs in all shelter in Toronto area (@fig-programs-total), from @opendatatoronto.
 
 ```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
-#| echo: false
-
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
-```
-
-Talk more about it.
-
-And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
-
-```{r}
-#| label: fig-planes
-#| fig-cap: Relationship between wing length and width
+#| label: fig-programs-total
+#| fig-cap: Total distinct program in all shelter based on city
+#| include: false
 #| echo: false
 #| warning: false
 #| message: false
 
-analysis_data <- read_csv(here::here("outputs/data/analysis_data.csv"))
+analysis_data <- read_csv("../../outputs/data/analysis_data.csv")
 
 analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
+  ggplot(aes(x = date, y = total_shelter_program, color = city)) +
+  geom_line() +
   theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
+  labs(x = "Date", y = "Total shelter programs", color = "City") +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.position = "bottom")
 ```
 
-Talk way more about it.
+We can see there is a decrease trend in the programs provided in Toronto area, but it still have the most programs out of all cities. Also, there is barely any services in Scarborough, Etobicoke and Vaughan, which is worth noticing.
 
-# Model
-
-The goal of our modelling strategy is twofold. Firstly,...
-
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
-
-## Model set-up
-
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.
-
-```{=tex}
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
-\end{align}
-```
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
-
-### Model justification
-
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
-
-We can use maths by including latex between dollar signs, for instance $\theta$.
-
-# Results
-
-Our results are summarized in @tbl-modelresults.
+Here is our data with program with free space in all shelter around Toronto area (@fig-programs-free).
 
 ```{r}
+#| label: fig-programs-free
+#| fig-cap: Distinct program with free space in all shelter based on city
+#| include: false
 #| echo: false
-#| eval: true
 #| warning: false
 #| message: false
 
-library(rstanarm)
-
-first_model <-
-  readRDS(file = here::here("outputs/models/first_model.rds"))
+analysis_data |> 
+  ggplot(aes(x = date, y = shelter_program_with_space, color = city)) +
+  geom_line() +
+  theme_minimal() +
+  labs(x = "Date", y = "Distinct shelter program with free space", color = "City") +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.position = "bottom")
 ```
+
+There is a downward trend in programs with space in Toronto, which could be caused by the decreasing number in total programs shown in @fig-programs-total. Meanwhile, despite Etobicoke, Scarborough and Vaughan all have very few programs, the space available is very different. Vaughan is free most of the time, Scarborough is free half the time, while Etobicoke barely have any space throughout the year.
+
+# Results {#sec-result}
+
+Our results are summarized in @tbl-results.
 
 ```{r}
 #| echo: false
 #| eval: true
-#| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
+#| label: tbl-results
+#| tbl-cap: "Average data of the year categorized by city"
+#| include: false
 #| warning: false
+#| message: false
 
-modelsummary::modelsummary(
-  list(
-    "First model" = first_model
-  ),
-  statistic = "mad",
-  fmt = 2
-)
+analysis_data |>
+  group_by(city) |>
+  summarize(shelter_program_with_space = mean(shelter_program_with_space),
+            total_shelter_program = mean(total_shelter_program),
+            percentage_full = mean(percentage_full)) |> 
+  kable(
+  col.names = c("City",
+                "Average program with space",
+                "Average total program",
+                "Average percentage of full program"),
+  digits = 1) |>
+  # Based on joshpk: https://stackoverflow.com/questions/57873293/how-to-add-more-space-between-columns-of-knitrkable-in-rstudio-notebooks
+  kable_styling()
 ```
 
 # Discussion
 
-## First discussion point {#sec-first-point}
+## Decrease in amount of shelter programs in Toronto {#sec-toronto-decrease}
 
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this.
+There is a huge decrease of amount of programs in Toronto area, from 29 to 20, as shown in @fig-programs-total. That is a 31% decrease. However, Toronto still have the most programs out of all cities (@fig-programs-total), @fig-programs-free shows that there is constantly programs with free space. As shown in @tbl-results, the average percentage for full shelter programs in Toronto thorughout the year is only 81.4%, the second lowest in the five cities. The reduction in program can be justify. The decreasing number of programs could be a result of decline in need for COVID quarantine program, further investigation is needed to find the cause.
 
-## Second discussion point
+## Need for shelter programs in nearby cites of Toronto {#sec-nearby-cities-need}
 
-## Third discussion point
+As shown in @fig-programs-free, Scarborough have no shelter program space most of the year, which is supported by @tbl-results, having a 97% average of full shelter programs throughout the year. In Etobicoke, the situation is even more severe, having no signs of free space in @fig-programs-free, while the average full shelter program is 99.7%(@tbl-results) , making it the only city having over 99% on average. This is likely caused by the low amount of shelter programs in these regions, having a total of 1 and 4 programs for Etobicoke and Scarborough respectively.Shelter program in those cities are constantly full throughout the year, and there is a need for more programs in those cities.
 
-## Weaknesses and next steps
+## Weaknesses and next steps {#sec-weakness}
 
-Weaknesses and next steps should also be included.
+There is quite a few weaknesses in this research. Firstly, there is many different type of programs, including COVID-19, temporary refugee, etc, which are all merged in this research. Categorizing programs by type can help us further investigate into the needs for each different type of programs, and the possible reasons of decline in Toronto shelter programs. Secondly, bed based capacity are not included in this research, and it could be further investigated to see if the results are similar or drastically different.
 
 \newpage
 
@@ -151,56 +125,23 @@ Weaknesses and next steps should also be included.
 
 # Additional data details
 
-# Model details {#sec-model-details}
-
-## Posterior predictive check
-
-In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
-
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows...
+@fig-programs-percent shows the percentage of program that is full. This figure is not used in the main discussion due to we cannot show the full graph without the graph being too dense towards the upper part.
 
 ```{r}
-#| eval: true
+#| label: fig-programs-percent
+#| fig-cap: Percentage of distinct program that is full in all shelter based on city
+#| include: false
 #| echo: false
-#| message: false
 #| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
+#| message: false
 
-pp_check(first_model) +
-  theme_classic() +
-  theme(legend.position = "bottom")
-
-posterior_vs_prior(first_model) +
+analysis_data |> 
+  ggplot(aes(x = date, y = percentage_full, color = city)) +
+  geom_line() +
   theme_minimal() +
+  labs(x = "Date", y = "Percentage of full program", color = "City") +
   scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom") +
-  coord_flip()
+  theme(legend.position = "bottom")
 ```
-
-## Diagnostics
-
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
-
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
-
-```{r}
-#| echo: false
-#| eval: true
-#| message: false
-#| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
-
-plot(first_model, "trace")
-
-plot(first_model, "rhat")
-```
-
-\newpage
 
 # References

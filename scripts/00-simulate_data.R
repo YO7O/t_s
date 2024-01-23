@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Simulates... [...UPDATE THIS...]
+# Purpose: Simulates the data of shelter programs
 # Author: Kenneth Chan
 # Date: 22 January 2024
 # Contact: chif.chan@mail.utoronto.ca
@@ -19,6 +19,9 @@ citation("tidyverse")
 citation("janitor")
 citation("ggplot2")
 #citation https://tellingstorieswithdata.com/
+citation("dplyr")
+print(citation("knitr"), bibtex=TRUE)
+citation("kableExtra")
 
 #### Simulate data ####
 set.seed(124)
@@ -26,7 +29,7 @@ set.seed(124)
 # Based on Rohan Alexander: https://tellingstorieswithdata.com/02-drinking_from_a_fire_hose.html#simulate-1
 simulated_occupancy_data <-
   tibble(
-    date = rep(x = as.Date("2023-01-01") + c(0:364), times = 3),
+    date = rep(x = as.Date("2022-01-01") + c(0:364), times = 3),
     # Based on Eddelbuettel: https://stackoverflow.com/a/21502386
     city = c(
       rep(x = "City 1", times = 365),

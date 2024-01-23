@@ -1,12 +1,10 @@
 # Starter folder
 
-## Overview
-
 **Statement on LLM usage: Aspects of the code were written with the help of the Chat-GPT-4. The entire chat history is available in inputs/llms/usage.txt.**
 
-This repo provides students with a foundation for their own projects associated with *Telling Stories with Data*. You do not need every aspect for every paper and you should delete aspects that you do not need.
+## Overview
 
-To use this folder, click the green "Code" button", then "Download ZIP". Move the downloaded folder to where you want to work on your own computer, and then modify it to suit.
+Homelessness and housing is a problem that every big city have to face, and Toronto is no exception. With the constant increase of rent in Toronto, there is no suprise that the need for shelter services is constantly high. We found that the amount of shelters programs with free space drastically differs between different cities nearby Toronto. This paper aims to visualize those difference with graphs and tables.
 
 ## File Structure
 
