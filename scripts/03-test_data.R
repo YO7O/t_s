@@ -15,6 +15,12 @@ library(tidyverse)
 shelter_data <- read_csv("outputs/data/analysis_data.csv")
 
 # Check if all data is from five cities around GTA
+shelter_data$program_area |>
+  unique() == c("COVID-19 Response",
+                "Temporary Refugee Response",
+                "Base Program - Refugee",
+                "Base Shelter and Overnight Services")
+
 shelter_data$city |>
   unique() == c("Etobicoke", "North York", "Scarborough", "Toronto", "Vaughan")
 
@@ -23,11 +29,8 @@ shelter_data$date |>
   unique() |>
   length() == 365
 
-# Check if amount of distinct program in different shelter with space is smaller 
-# or equal to the total amount of distinct program in different shelter
-all(shelter_data$shelter_program_with_space <= shelter_data$total_shelter_program)
+# Check if the amount of unoccupied rooms is greater than 0 on all entries
+all(shelter_data$unoccupied_rooms >= 0)
 
-# Check if the full percentage match with other variables
-all.equal(
-  shelter_data$percentage_full,
-  (1 - shelter_data$shelter_program_with_space / shelter_data$total_shelter_program) * 100)
+# Check if occupancy rate is less than 100 on all entries
+all(shelter_data$occupancy_rate <= 100)

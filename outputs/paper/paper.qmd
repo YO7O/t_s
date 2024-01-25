@@ -5,7 +5,7 @@ author:
 thanks: "Code and data are available at: https://github.com/YO7O/toronto_shelter_capacity"
 date: today
 date-format: long
-abstract: "Homelessness and housing is a problem that every big city have to face, and Toronto is no exception. With the constant increase of rent in Toronto, there is no suprise that the need for shelter services is constantly high. We found that the amount of shelters programs with free space drastically differs between different cities nearby Toronto. This paper aims to visualize those difference with graphs and tables."
+abstract: "Homelessness and housing is a problem that every big city have to face, and Toronto is no exception. With the constant increase of rent in Toronto, there is no suprise that the need for shelter services is constantly high. We found that the amount of shelters programs drastically differs between different cities nearby Toronto. This paper aims to visualize those difference with graphs and tables."
 format: pdf
 number-sections: true
 toc: true
@@ -23,19 +23,23 @@ library(knitr)
 library(kableExtra)
 ```
 
+\newpage
+
 # Introduction {#sec-intro}
 
-Year 2023 is the first year I came back to Canada since COVID-19 happened. I still recall that I was hugely shocked by the inflation in rent, which felt like a 20% increase across the board since I left in 2020. This makes me wonder, if a international student with a decent wealth family background like me is shocked by the rent, how would it affect the homelessness of the city, considering the average salary have not gone up by a huge margin.
+Year 2023 is the first year I came back to Canada since COVID-19 happened. I still recall that I was hugely shocked by the inflation in rent, which felt like a 20% increase across the board since I left in 2020. This makes me wonder, if a international student with a decent wealth family background like me is shocked by the rent, how would it affect the homelessness of the city, considering the average salary have not catch up with the rent.
 
-This paper aims to analyze the data of shelter programs in different cities, and find out the how many shelter programs are available, or in other words, have free space throughout the year for people that is in need. Despite having a lot of analysis about toronto shelter online, I cannot find one that is specifically aiming towards finding difference in district, hence this paper is written. 
+District of homeless shelter around Toronto is not commonly studied, and requires attention. Most homeless people would not have the luxury to drive a car, and the public transit in GTA is not the best, to say the least. This paper analyze the data of shelter programs in different cities, and discover some interesting founding around the difference in need for shelter program between cities.
 
 # Data {#sec-data}
 
-Some of our data is of total programs in all shelter in Toronto area (@fig-programs-total), from @opendatatoronto.
+Tools by @citeR, @tidyverse and @janitor is used to clean and analyze the data collected from @opendatatoronto.
+
+Here is some of our data of total amount of distinct shelter program in all shelter in nearby Toronto area (@fig-programs-total), using tools from @ggplot2
 
 ```{r}
 #| label: fig-programs-total
-#| fig-cap: Total distinct program in all shelter based on city
+#| fig-cap: Total amount of distinct program in all shelter based on city in 2023
 #| echo: false
 #| warning: false
 #| message: false
@@ -43,35 +47,43 @@ Some of our data is of total programs in all shelter in Toronto area (@fig-progr
 analysis_data <- read_csv("../../outputs/data/analysis_data.csv")
 
 analysis_data |> 
-  ggplot(aes(x = date, y = total_shelter_program, color = city)) +
+  ggplot(aes(x = date, y = total_shelter_program, color = program_area)) +
   geom_line() +
-  theme_minimal() +
-  labs(x = "Date", y = "Total shelter programs", color = "City") +
+  ylim(0, 20) +
+  facet_grid(city ~ .) +
+  labs(x = "Date", y = "Total shelter programs", color = "Program area") +
   scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom")
+  theme(axis.text=element_text(size=7),
+        legend.margin=margin(t = 0, unit='cm'),
+        legend.text = element_text(size = 6),
+        legend.title = element_text(size = 8))
+
 ```
 
-We can see there is a decrease trend in the programs provided in Toronto area, but it still have the most programs out of all cities. Also, there is barely any services in Scarborough, Etobicoke and Vaughan, which is worth noticing.
+As @fig-programs-total shown, there is 3 cities, Etobicoke, Scarborough and Vaughan, where the only available program area is COVID-19 Response. On the side of Toronto, there is a decrease on COVID-19 Response, while other program area remain stable across the year.
 
-Here is our data with program with free space in all shelter around Toronto area (@fig-programs-free), analyzed using tools made by @citeR and @tidyverse
+Here is our data with program with free space in all shelter around Toronto area (@fig-programs-rooms).
 
 ```{r}
-#| label: fig-programs-free
-#| fig-cap: Distinct program with free space in all shelter based on city
+#| label: fig-programs-rooms
+#| fig-cap: Amount of unoccupied rooms on each day based on city in 2023
 #| echo: false
 #| warning: false
 #| message: false
 
 analysis_data |> 
-  ggplot(aes(x = date, y = shelter_program_with_space, color = city)) +
-  geom_line() +
+  ggplot(aes(x = city, y = unoccupied_rooms, color = program_area)) +
+  geom_jitter(alpha = 0.3, height = 0.15) +
   theme_minimal() +
-  labs(x = "Date", y = "Distinct shelter program with free space", color = "City") +
+  labs(x = "City", y = "Unoccupied Rooms", color = "Program area") +
   scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom")
+  theme(axis.text=element_text(size=7),
+        legend.margin=margin(t = 0, unit='cm'),
+        legend.text = element_text(size = 6),
+        legend.title = element_text(size = 8))
 ```
 
-There is a downward trend in programs with space in Toronto, which could be caused by the decreasing number in total programs shown in @fig-programs-total. Meanwhile, despite Etobicoke, Scarborough and Vaughan all have very few programs, the space available is very different. Vaughan is free most of the time, Scarborough is free half the time, while Etobicoke barely have any space throughout the year.
+There is no rooms available on both Etobicoke and Scarborough most of the days throughout 2023, despite the pandemic is over and quarantine is no longer needed. In Toronto and North York, most of the available rooms comes from COVID-19 Response as well, and other programs barely have any space.
 
 # Results {#sec-result}
 
@@ -86,60 +98,35 @@ Our results are summarized in @tbl-results with the help of tools made by @knitr
 #| message: false
 
 analysis_data |>
-  group_by(city) |>
-  summarize(shelter_program_with_space = mean(shelter_program_with_space),
+  group_by(city, program_area) |>
+  summarize(unoccupied_rooms = mean(unoccupied_rooms),
             total_shelter_program = mean(total_shelter_program),
-            percentage_full = mean(percentage_full)) |> 
+            occupancy_rate = mean(occupancy_rate)) |> 
   kable(
   col.names = c("City",
-                "Average program with space",
-                "Average total program",
-                "Average percentage of full program"),
+                "Program area",
+                "Unoccupied rooms",
+                "Total program",
+                "Occupancy rate"),
   digits = 1) |>
   # Based on joshpk: https://stackoverflow.com/questions/57873293/how-to-add-more-space-between-columns-of-knitrkable-in-rstudio-notebooks
-  kable_styling()
+  kable_styling(font_size = 8)
 ```
-
-# Discussion
-
-## Decrease in amount of shelter programs in Toronto {#sec-toronto-decrease}
-
-There is a huge decrease of amount of programs in Toronto area, from 29 to 20, as shown in @fig-programs-total. That is a 31% decrease. However, Toronto still have the most programs out of all cities (@fig-programs-total), @fig-programs-free shows that there is constantly programs with free space. As shown in @tbl-results, the average percentage for full shelter programs in Toronto thorughout the year is only 81.4%, the second lowest in the five cities. The reduction in program can be justify. The decreasing number of programs could be a result of decline in need for COVID quarantine program, further investigation is needed to find the cause.
-
-## Need for shelter programs in nearby cites of Toronto {#sec-nearby-cities-need}
-
-As shown in @fig-programs-free, Scarborough have no shelter program space most of the year, which is supported by @tbl-results, having a 97% average of full shelter programs throughout the year. In Etobicoke, the situation is even more severe, having no signs of free space in @fig-programs-free, while the average full shelter program is 99.7%(@tbl-results) , making it the only city having over 99% on average. This is likely caused by the low amount of shelter programs in these regions, having a total of 1 and 4 programs for Etobicoke and Scarborough respectively.Shelter program in those cities are constantly full throughout the year, and there is a need for more programs in those cities.
-
-## Weaknesses and next steps {#sec-weakness}
-
-There is quite a few weaknesses in this research. Firstly, there is many different type of programs, including COVID-19, temporary refugee, etc, which are all merged in this research. Categorizing programs by type can help us further investigate into the needs for each different type of programs, and the possible reasons of decline in Toronto shelter programs. Secondly, bed based capacity are not included in this research, and it could be further investigated to see if the results are similar or drastically different.
 
 \newpage
 
-\appendix
+# Discussion
 
-# Appendix {.unnumbered}
+## Decrease in amount of COVID programs in Toronto {#sec-toronto-decrease}
 
-# Additional data details
+There is a huge decrease of amount of COVID-19 programs in Toronto area, from 15 to 6, as shown in @fig-programs-total. It is normal as the pandemic is over, and @tbl-results show that the average available rooms is 15.1, which firmly justify the decrease in COVID-19 programs. However, the same trend is not shown in other cities except Vaughan, where the available rooms continue to stay low throughout the year.
 
-@fig-programs-percent shows the percentage of program that is full. This figure is not used in the main discussion due to we cannot show the full graph without the graph being too dense towards the upper part.
+## Need for shelter programs in nearby cites of Toronto {#sec-nearby-cities-need}
 
-```{r}
-#| label: fig-programs-percent
-#| fig-cap: Percentage of distinct program that is full in all shelter based on city
-#| echo: false
-#| warning: false
-#| message: false
+As shown in @fig-programs-rooms, Scarborough have no shelter program space most of the year, which is supported by @tbl-results, having a 99.8% average of occupancy rate and 0.3 available rooms per day throughout the year. In Etobicoke, the situation is more severe, having only 1 days with 1 room (@fig-programs-rooms), and the occupancy rate and available rooms is 100% and 0 respectively. Also, there is a total of one program that is not COVID-19 Response outside of Toronto, and with the high occupancy rate on across the board on other cities, there is a need for more rooms and shelter programs.
 
-analysis_data |> 
-  ggplot(aes(x = date, y = percentage_full, color = city)) +
-  geom_line() +
-  theme_minimal() +
-  labs(x = "Date", y = "Percentage of full program", color = "City") +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom")
-```
+## Next steps and Weaknesses {#sec-next}
 
-Here are some reference that is used in code but haven't mentioned in the paper: @janitor, @tellingstories, @dplyr
+Cities besides Toronto having only COVID-19 Response programs in a era of post pandemic, programs still continue to have such high occupancy rate, despite the huge drop in need in Toronto. It could be either the demand for those programs were always high, and the only city that meet those demand is Toronto, or those program are repurpose to serve other people in need. Future research will focus on gaining a more comprehensive understanding of the reasons of difference in trend between cities. As this research only focused on room based service, and bed based service is ignored, further research could be done around bed based service. Some research could be done on the relationship between rent increase and the shelter program usage as well.
 
 # References
