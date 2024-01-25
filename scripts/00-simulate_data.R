@@ -33,7 +33,7 @@ simulated_occupancy_data <-
         n = 365 * 6,
         lambda = 100
       ), # Draw 1,095 times from the Poisson distribution
-    total_shelter_number =
+    total_shelter_programs =
       rpois(
         n = 365 * 6,
         lambda = 10
